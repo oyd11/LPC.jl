@@ -12,7 +12,7 @@ function lpc_burg{T_NUM <: Number}( x::Vector{T_NUM}, p::Int)
 # such that:
 # minimizing x_prediction(n) = a*x
 # ie: an IIR:
-#  y = filter(1,a, white)
+#  y = filt(1, a, white)
 # should have similiar spectrum to x
 # where 'white' is a signal with white spectrum
 # 
