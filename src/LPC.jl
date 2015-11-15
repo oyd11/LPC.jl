@@ -1,6 +1,16 @@
 
 module LPC
 
+#
+# TODO:
+# [v] lpc-burg
+# [ ] lattice-filter synth
+# [ ] warped-lpc
+# [ ] lpc-acorr
+# [ ] lpc-covar
+# [ ] Line-Spectral-Pairs
+#
+
 export lpc_burg
 
 function lpc_burg{T_NUM <: Number}( x::Vector{T_NUM}, p::Int)
