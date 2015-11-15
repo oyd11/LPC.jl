@@ -1,9 +1,13 @@
 # LPC.jl
 Linear predictive coding, Julia module
 
-lpc_burg( x, p)
+a, e, rc = lpc_burg( x, p)
 
 x - input signal, p - prediction order
+
+a - predicted all-pole filter
+e - variance of prediction error
+rc - reflection-coefficients 
 
 Currently implemented the Burg method to calculate lpc, which calculates the Reflection-Coefficients as a side-effect, and has several stability advantedges.
 
@@ -28,5 +32,4 @@ Currently implemented the Burg method to calculate lpc, which calculates the Ref
  Implementing the loop from the article:
  [1] - ENHANCED PARTIAL TRACKING USING LINEAR PREDICTION
  (DAFX'03 article, Lagrange et al)
- http://www.elec.qmul.ac.uk/dafx03/proceedings/pdfs/dafx19.pdf
-
+ http://www.eecs.qmul.ac.uk/legacy/dafx03/proceedings/pdfs/dafx19.pdf
