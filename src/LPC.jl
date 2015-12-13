@@ -13,6 +13,7 @@ module LPC
 #
 
 export lpc_burg, pow_spect
+export log_area_ratio, inv_sine_coeffs
 
 function lpc_burg{T_NUM <: Number}( x::Vector{T_NUM}, p::Int)
 # LPC (Linear-Predictive-Code) estimation, using the Burg-method
@@ -55,9 +56,9 @@ function lpc_burg{T_NUM <: Number}( x::Vector{T_NUM}, p::Int)
     refl = zeros(T_NUM, p) # reflection coeffs
     k = 0.  
 
-#    prediction_err_ = x'*x ./ length(x)
-    prediction_err_ = x'*x ./ p
-    prediction_err = prediction_err_[1]
+# zero-mean - or not?
+    prediction_err_ = x'*x ./ length(x)  # variance
+    prediction_err = prediction_err_[1] 
 
     for m in 1:p
         efp = ef[1:end-1]
@@ -67,10 +68,7 @@ function lpc_burg{T_NUM <: Number}( x::Vector{T_NUM}, p::Int)
         refl[m] = k           # save reflection coeffs (if needed)
         ef = efp + k.*ebp
         eb = ebp + k.*efp
-#        a = [a[1:m], zero(T_NUM)] + k.*[zero(T_NUM), a[m:-1:1]]
-        # ^ try with constant size arrays instead...
         a[1:m+1] = [a[1:m], 0] + k.*[0, a[m:-1:1]]
-#        prediction_err .*= (one(T_NUM) - k*k)
         prediction_err .*= (1 - k*k)
     end
 
@@ -80,12 +78,19 @@ end
 
 
 function pow_spect(ar, err, dft_order = 256)
-    f = fft( [ar, zeros(dft_order - length(ar))] )
+    f = rfft( [ar, zeros(dft_order - length(ar))] )
     psd = err ./ (abs(f).^2 + eps() )
 
     return psd
 end
 
+function log_area_ratio(k)
+    return log( (1 + k) ./ (1 - k) )
+end
+
+function inv_sine_coeffs(k)
+    return 2asin(k) ./ pi
+end
 
 end # module
 
