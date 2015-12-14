@@ -68,7 +68,7 @@ function lpc_burg{T_NUM <: Number}( x::Vector{T_NUM}, p::Int)
         refl[m] = k           # save reflection coeffs (if needed)
         ef = efp + k.*ebp
         eb = ebp + k.*efp
-        a[1:m+1] = [a[1:m], 0] + k.*[0, a[m:-1:1]]
+        a[1:m+1] = [a[1:m]; 0] + k.*[0; a[m:-1:1]]
         prediction_err .*= (1 - k*k)
     end
 
@@ -78,7 +78,7 @@ end
 
 
 function pow_spect(ar, err, dft_order = 256)
-    f = rfft( [ar, zeros(dft_order - length(ar))] )
+    f = rfft( [ar; zeros(dft_order - length(ar))] )
     psd = err ./ (abs(f).^2 + eps() )
 
     return psd
