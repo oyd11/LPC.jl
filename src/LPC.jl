@@ -50,7 +50,7 @@ function lpc_burg{T_NUM <: Number}( x::Vector{T_NUM}, p::Int)
 
     ef = x    # forward error
     eb = x    # backwards error
-    a = zeros(p+1)  # prediction coeffs
+    a = zeros(T_NUM, p+1)  # prediction coeffs
     a[1] = 1
 #    sizehint!(a, p+1) # ?
     refl = zeros(T_NUM, p) # reflection coeffs
