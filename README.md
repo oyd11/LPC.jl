@@ -1,4 +1,8 @@
 # LPC.jl
+
+(Note: now integrated into Julia's DSP.jl thanks to StaticFloat, though the integrated version doesn't return the reflection coeffs [problematic, and will be solved])
+
+
 Linear predictive coding, Julia module
 
 a, e, rc = lpc_burg( x, p)

@@ -9,13 +9,13 @@ module LPC
 # [ ] lpc-acorr
 # [ ] lpc-covar
 # [ ] Line-Spectral-Pairs
-# [ ] power-spectrum est
+# [v] power-spectrum est
 #
 
 export lpc_burg, pow_spect
 export log_area_ratio, inv_sine_coeffs
 
-function lpc_burg{T_NUM <: Number}( x::Vector{T_NUM}, p::Int)
+function lpc_burg{T <: Number}( x::AbstractVector{T}, p::Int)
 # LPC (Linear-Predictive-Code) estimation, using the Burg-method
 # @param: x - signal to predict
 # @param: p - prediction order
@@ -50,26 +50,22 @@ function lpc_burg{T_NUM <: Number}( x::Vector{T_NUM}, p::Int)
 
     ef = x    # forward error
     eb = x    # backwards error
-    a = zeros(T_NUM, p+1)  # prediction coeffs
-    a[1] = 1
-#    sizehint!(a, p+1) # ?
-    refl = zeros(T_NUM, p) # reflection coeffs
-    k = 0.  
+    a = [1; zeros(T, p)]  # prediction coeffs
+    refl = zeros(T, p) # reflection coeffs
+    k = zero(T)
 
 # zero-mean - or not?
-    prediction_err_ = x'*x ./ length(x)  # variance
-    prediction_err = prediction_err_[1] 
+    prediction_err = dot(x,x) ./ length(x)  # variance
 
     for m in 1:p
         efp = ef[1:end-1]
         ebp = eb[2:end]
-        k_ = -2 .* ebp'*efp ./ ( ebp'*ebp + efp'*efp )
-        k = k_[1] # julia thing, array of 1-element
+        k = -2 .* dot(ebp,efp) ./ ( dot(ebp,ebp) .+ dot(efp,efp) )
         refl[m] = k           # save reflection coeffs (if needed)
         ef = efp + k.*ebp
         eb = ebp + k.*efp
         a[1:m+1] = [a[1:m]; 0] + k.*[0; a[m:-1:1]]
-        prediction_err .*= (1 - k*k)
+        prediction_err *= (1 - k*k)
     end
 
     return a, prediction_err, refl 
